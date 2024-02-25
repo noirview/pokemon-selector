@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Pokemons\IndexRequest;
 use App\Http\Resources\PokemonResource;
 use App\Models\Pokemon;
