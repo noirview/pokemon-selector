@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Web\PokemonController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::as('pokemons.')
+    ->prefix('pokemons')
+    ->controller(PokemonController::class)
+    ->group(function () {
+        Route::get('', 'index')->name('index');
+        Route::get('filter', 'filter')->name('filter');
+    });
