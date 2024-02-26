@@ -27,15 +27,11 @@ class PokemonController extends Controller
     public function filter(IndexRequest $request)
     {
         $pokemons = Pokemon::query()
-            ->whereHas('genders',
-                fn(Builder $query) => $query->where('gender', $request->integer('gender'))
-            )
-            ->where('growth_rate', $request->integer('growth_rate'))
-            ->whereHas('natures',
-                fn(Builder $query) => $query->where('nature', $request->integer('nature'))
-            )
-            ->where('color', $request->integer('color'))
-            ->orderByDesc('base_experience')
+            ->gender($request->integer('gender'))
+            ->growthRate($request->integer('growth_rate'))
+            ->nature($request->integer('nature'))
+            ->color($request->integer('color'))
+            ->orderByBaseExperience('desc')
             ->get();
 
         return redirect()->back()
