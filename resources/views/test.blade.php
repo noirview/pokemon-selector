@@ -47,9 +47,9 @@
                 <div>
                     <h2>{{ $pokemon->name }}</h2>
                     <ul>
-                        <li>Gender: {{ $pokemon->gender }}</li>
+                        <li>Gender: {{ $pokemon->genders->pluck('gender') }}</li>
                         <li>Growth Rate: {{ $pokemon->growth_rate }}</li>
-                        <li>Nature: {{ $pokemon->nature }}</li>
+                        <li>Nature: {{ $pokemon->natures->pluck('nature') }}</li>
                         <li>Color: {{ $pokemon->color }}</li>
                         <li>Base experience: {{ $pokemon->base_experience }}</li>
                     </ul>

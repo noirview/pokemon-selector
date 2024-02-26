@@ -3,12 +3,11 @@
 namespace App\Models;
 
 use App\Enums\Pokemon\Color;
-use App\Enums\Pokemon\Gender;
 use App\Enums\Pokemon\GrowthRate;
-use App\Enums\Pokemon\Nature;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pokemon extends Model
 {
@@ -19,17 +18,23 @@ class Pokemon extends Model
 
     protected $fillable = [
         'name',
-        'gender',
         'growth_rate',
-        'nature',
         'color',
         'base_experience',
     ];
 
     protected $casts = [
-        'gender' => Gender::class,
         'growth_rate' => GrowthRate::class,
-        'nature' => Nature::class,
         'color' => Color::class,
     ];
+
+    public function genders(): HasMany
+    {
+        return $this->hasMany(PokemonGender::class);
+    }
+
+    public function natures(): HasMany
+    {
+        return $this->hasMany(PokemonNature::class);
+    }
 }

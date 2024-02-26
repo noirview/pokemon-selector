@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pokemons\IndexRequest;
 use App\Models\Pokemon;
+use Illuminate\Database\Eloquent\Builder;
 
 class PokemonController extends Controller
 {
@@ -26,10 +27,13 @@ class PokemonController extends Controller
     public function filter(IndexRequest $request)
     {
         $pokemons = Pokemon::query()
-            ->select(['name', 'gender', 'growth_rate', 'nature', 'color', 'base_experience'])
-            ->where('gender', $request->integer('gender'))
+            ->whereHas('genders',
+                fn(Builder $query) => $query->where('gender', $request->integer('gender'))
+            )
             ->where('growth_rate', $request->integer('growth_rate'))
-            ->where('nature', $request->integer('nature'))
+            ->whereHas('natures',
+                fn(Builder $query) => $query->where('nature', $request->integer('nature'))
+            )
             ->where('color', $request->integer('color'))
             ->orderByDesc('base_experience')
             ->get();
