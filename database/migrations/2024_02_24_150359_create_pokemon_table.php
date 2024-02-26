@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('growth_rate');
             $table->integer('nature');
             $table->integer('color');
-            $table->integer('base_experience');
+            $table->integer('base_experience')->nullable();
 
             $table->timestamps();
         });
