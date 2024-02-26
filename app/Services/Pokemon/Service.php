@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Http;
 
 class Service
 {
+    private array $cacheResponse = [];
+
     public function getPokemons(): array
     {
         $pokemons = [];
@@ -91,18 +93,28 @@ class Service
 
     public function getSpecies(string $url): array
     {
+        if (Arr::has($this->cacheResponse, $url)) {
+            return $this->cacheResponse[$url];
+        }
+
         $request = Http::get($url);
 
         $json = $request->json();
+        $this->cacheResponse[$url] = $json;
 
         return $json;
     }
 
     public function getStat(string $url): array
     {
+        if (Arr::has($this->cacheResponse, $url)) {
+            return $this->cacheResponse[$url];
+        }
+
         $request = Http::get($url);
 
         $json = $request->json();
+        $this->cacheResponse[$url] = $json;
 
         return $json;
     }
