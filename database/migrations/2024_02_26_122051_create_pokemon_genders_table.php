@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pokemon_genders', function (Blueprint $table) {
-            $table->uuid()->unique();
+            $table->uuid('id')->unique();
 
             $table->string('pokemon_id');
             $table->foreign('pokemon_id')->references('id')->on('pokemons')
