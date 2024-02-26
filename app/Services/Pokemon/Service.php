@@ -3,6 +3,7 @@
 namespace App\Services\Pokemon;
 
 use App\DTOs\PokemonDTO;
+use Generator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 
@@ -10,76 +11,80 @@ class Service
 {
     private array $cacheResponse = [];
 
-    public function getPokemons(): array
+    public function getPokemons(): Generator
     {
-        $pokemons = [];
-        $pokemonsList = $this->getListPokemons();
+        $pokemonChunkList = $this->getListPokemons();
 
-        foreach ($pokemonsList as $pokemon) {
-            $url = Arr::get($pokemon, 'url');
-            $pokemon = $this->getPokemon($url);
+        foreach ($pokemonChunkList as $pokemonList) {
+            $pokemons = [];
+            foreach ($pokemonList as $pokemon) {
 
-            $name = Arr::get($pokemon, 'name');
-            $baseExperience = Arr::get($pokemon, 'base_experience');
+                $url = Arr::get($pokemon, 'url');
+                dump($url);
 
-            $species = Arr::get($pokemon, 'species');
-            $url = Arr::get($species, 'url');
-            $species = $this->getSpecies($url);
+                $pokemon = $this->getPokemon($url);
 
-            $stats = Arr::get($pokemon, 'stats');
+                $name = Arr::get($pokemon, 'name');
+                $baseExperience = Arr::get($pokemon, 'base_experience');
 
-            $urls = Arr::map($stats, fn(array $stat) => Arr::get($stat, 'stat.url'));
-            $natures = [];
-            foreach ($urls as $url) {
-                $stat = $this->getStat($url);
-                $affectingNatures = Arr::get($stat, 'affecting_natures');
+                $species = Arr::get($pokemon, 'species');
+                $url = Arr::get($species, 'url');
+                $species = $this->getSpecies($url);
 
-                $increase = Arr::get($affectingNatures, 'increase');
-                $decrease = Arr::get($affectingNatures, 'decrease');
+                $stats = Arr::get($pokemon, 'stats');
 
-                foreach (array_merge($increase, $decrease) as $nature) {
-                    $name = Arr::get($nature, 'name');
-                    if (!in_array($name, $natures)) {
-                        $natures[] = $name;
+                $urls = Arr::map($stats, fn(array $stat) => Arr::get($stat, 'stat.url'));
+                $natures = [];
+                foreach ($urls as $url) {
+                    $stat = $this->getStat($url);
+                    $affectingNatures = Arr::get($stat, 'affecting_natures');
+
+                    $increase = Arr::get($affectingNatures, 'increase');
+                    $decrease = Arr::get($affectingNatures, 'decrease');
+
+                    foreach (array_merge($increase, $decrease) as $nature) {
+                        $natureName = Arr::get($nature, 'name');
+                        if (!in_array($natureName, $natures)) {
+                            $natures[] = $natureName;
+                        }
                     }
                 }
+
+                $color = Arr::get($species, 'color.name');
+                $genderRate = Arr::get($species, 'gender_rate');
+                $growthRate = Arr::get($species, 'growth_rate.name');
+
+                $pokemons[] = new PokemonDTO(
+                    $name,
+                    $genderRate,
+                    $growthRate,
+                    $natures,
+                    $color,
+                    $baseExperience,
+                );
             }
 
-            $color = Arr::get($species, 'color.name');
-            $genderRate = Arr::get($species, 'gender_rate');
-            $growthRate = Arr::get($species, 'growth_rate.name');
-
-            $pokemons[] = new PokemonDTO(
-                $name,
-                $genderRate,
-                $growthRate,
-                $natures,
-                $color,
-                $baseExperience,
-            );
+            yield $pokemons;
         }
-
-        return $pokemons;
     }
 
-    private function getListPokemons(): array
+    private function getListPokemons(): Generator
     {
         $results = [];
         $next = 'https://pokeapi.co/api/v2/pokemon?limit=100';
 
         while (true) {
+            dump($next);
             $request = Http::get($next);
 
             $next = $request->json('next');
-            $results = array_merge($results, $request->json('results'));
 
-            dump($next);
+            yield array_merge($results, $request->json('results'));
+
             if (is_null($next)) {
                 break;
             }
         }
-
-        return $results;
     }
 
     private function getPokemon(string $url): array
