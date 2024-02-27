@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pokemons\IndexRequest;
 use App\Models\Pokemon;
-use Illuminate\Database\Eloquent\Builder;
 
 class PokemonController extends Controller
 {
@@ -27,6 +26,7 @@ class PokemonController extends Controller
     public function filter(IndexRequest $request)
     {
         $pokemons = Pokemon::query()
+            ->with('media')
             ->gender($request->integer('gender'))
             ->growthRate($request->integer('growth_rate'))
             ->nature($request->integer('nature'))
