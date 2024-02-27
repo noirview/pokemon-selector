@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pokemons\IndexRequest;
-use App\Models\Pokemon;
+use App\Repositories\Pokemons\PokemonRepository;
 
 class PokemonController extends Controller
 {
+    public function __construct(
+        private PokemonRepository $repository,
+    ) {}
+
     public function index()
     {
         $genders = \App\Enums\Pokemon\Gender::cases();
@@ -25,14 +29,12 @@ class PokemonController extends Controller
 
     public function filter(IndexRequest $request)
     {
-        $pokemons = Pokemon::query()
-            ->with('media')
-            ->gender($request->integer('gender'))
-            ->growthRate($request->integer('growth_rate'))
-            ->nature($request->integer('nature'))
-            ->color($request->integer('color'))
-            ->orderByBaseExperience('desc')
-            ->get();
+        $pokemons = $this->repository->getAllBy(
+            $request->integer('gender'),
+            $request->integer('growth_rate'),
+            $request->integer('nature'),
+            $request->integer('color'),
+        );
 
         return redirect()->back()
             ->withInput()
