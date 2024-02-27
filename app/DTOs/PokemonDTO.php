@@ -8,7 +8,7 @@ class PokemonDTO
         public readonly string   $imgUrl,
         public readonly string   $name,
         public readonly int      $genderRate,
-        public readonly int      $growthRate,
+        public readonly string   $growthRate,
         public readonly array    $natures,
         public readonly string   $color,
         public readonly int|null $baseExperience,
