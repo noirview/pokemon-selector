@@ -29,7 +29,14 @@ class PokemonController extends Controller
 
     public function filter(IndexRequest $request)
     {
-        $pokemons = $this->repository->getAllBy(
+        $pokemons = $this->repository->filterBy(
+            $request->integer('gender'),
+            $request->integer('growth_rate'),
+            $request->integer('nature'),
+            $request->integer('color'),
+        );
+
+        $weakPokemons = $this->repository->weakFilterBy(
             $request->integer('gender'),
             $request->integer('growth_rate'),
             $request->integer('nature'),
@@ -38,6 +45,7 @@ class PokemonController extends Controller
 
         return redirect()->back()
             ->withInput()
-            ->with('pokemons', $pokemons);
+            ->with('pokemons', $pokemons)
+            ->with('weak_pokemons', $weakPokemons);
     }
 }

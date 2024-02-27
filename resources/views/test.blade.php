@@ -60,8 +60,27 @@
     </form>
 
     @if(session('pokemons'))
-        <div class="container mx-auto flex flex-row flex-wrap">
+        <div class="container mx-auto flex flex-row flex-wrap mb-44">
             @foreach(session('pokemons') as $pokemon)
+                <div
+                    class="max-w-48 lg:w-1/6 md:w-1/4 rounded-lg border border-solid drop-shadow-lg mx-6 my-4 p-2 grow">
+                    <img class="mx-auto min-h-24"
+                         src="{{ $pokemon->getFirstMediaUrl('sprite') }}" alt="">
+                    <h2 class="text-center uppercase">{{ $pokemon->name }}</h2>
+                    <ul>
+                        <li>Gender: {{ $pokemon->genders->pluck('gender') }}</li>
+                        <li>Growth Rate: {{ $pokemon->growth_rate }}</li>
+                        <li>Nature: {{ $pokemon->natures->pluck('nature') }}</li>
+                        <li>Color: {{ $pokemon->color }}</li>
+                        <li>Base experience: {{ $pokemon->base_experience }}</li>
+                    </ul>
+                </div>
+            @endforeach
+        </div>
+    @endif
+    @if(session('weak_pokemons'))
+        <div class="container mx-auto flex flex-row flex-wrap mb-44">
+            @foreach(session('weak_pokemons') as $pokemon)
                 <div
                     class="max-w-48 lg:w-1/6 md:w-1/4 rounded-lg border border-solid drop-shadow-lg mx-6 my-4 p-2 grow">
                     <img class="mx-auto min-h-24"
