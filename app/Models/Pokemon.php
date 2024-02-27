@@ -11,11 +11,15 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Pokemon extends Model
+class Pokemon extends Model implements HasMedia
 {
     use HasUuids,
         HasFactory;
+
+    use InteractsWithMedia;
 
     protected $table = 'pokemons';
 
@@ -30,6 +34,12 @@ class Pokemon extends Model
         'growth_rate' => GrowthRate::class,
         'color' => Color::class,
     ];
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('sprite')
+            ->singleFile();
+    }
 
     public function genders(): HasMany
     {

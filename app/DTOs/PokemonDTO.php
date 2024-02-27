@@ -5,6 +5,7 @@ namespace App\DTOs;
 class PokemonDTO
 {
     public function __construct(
+        public readonly string   $imgUrl,
         public readonly string   $name,
         public readonly int      $genderRate,
         public readonly int      $growthRate,

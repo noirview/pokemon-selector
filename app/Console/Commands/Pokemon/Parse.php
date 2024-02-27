@@ -60,6 +60,8 @@ class Parse extends Command
                 ]);
 
                 $pokemonModel->save();
+                $pokemonModel->addMediaFromUrl($pokemon->imgUrl)
+                    ->toMediaCollection('sprite');
 
                 $pokemonModel->genders()->createMany($genderModels);
                 $pokemonModel->natures()->createMany($natureModels);

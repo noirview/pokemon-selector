@@ -26,6 +26,7 @@ class Service
 
                 $name = Arr::get($pokemon, 'name');
                 $baseExperience = Arr::get($pokemon, 'base_experience');
+                $imgUrl = Arr::get($pokemon, 'sprites.front_default');
 
                 $species = Arr::get($pokemon, 'species');
                 $url = Arr::get($species, 'url');
@@ -55,6 +56,7 @@ class Service
                 $growthRate = Arr::get($species, 'growth_rate.name');
 
                 $pokemons[] = new PokemonDTO(
+                    $imgUrl,
                     $name,
                     $genderRate,
                     $growthRate,
